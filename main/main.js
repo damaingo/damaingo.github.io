@@ -1,4 +1,3 @@
-
  // 页面切换功能
         document.querySelectorAll('.infinite-item').forEach(item => {
             item.addEventListener('click', function() {
