@@ -32,7 +32,7 @@ async function uploadToGitHub(commitMessage = '更新博客文章') {
         // 3. 测试 SSH 连接
         console.log('🔑 测试 SSH 连接...');
         try {
-            await runCommand('git@github.com:damaingo/damaingo.github.io.git');
+            await runCommand('ssh -T git@github.com');
             console.log('✅ SSH 连接正常');
         } catch (sshError) {
             console.log('⚠️ SSH 连接测试失败，但继续尝试...');
