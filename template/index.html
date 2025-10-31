@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>posts</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入 Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="nav-logo">我的博客</h1>
+                <button class="new-post-btn" @click="showEditor = true">
+                    <i class="fas fa-plus"></i> 写文章
+                </button>
+            </div>
+        </nav>
+
+        <!-- 主要内容区 -->
+        <main class="main-container">
+            <!-- 文章编辑器 -->
+            <div v-if="showEditor" class="editor-modal">
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <h2>{{ editingPost ? '编辑文章' : '写新文章' }}</h2>
+                        <button class="close-btn" @click="closeEditor">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="editor-body">
+                        <input
+                            type="text"
+                            class="title-input"
+                            placeholder="文章标题..."
+                            v-model="currentPost.title"
+                        >
+                        <textarea
+                            class="content-textarea"
+                            placeholder="开始写作..."
+                            v-model="currentPost.content"
+                        ></textarea>
+                    </div>
+                    <div class="editor-footer">
+                        <button class="cancel-btn" @click="closeEditor">取消</button>
+                        <button class="publish-btn" @click="savePost">
+                            {{ editingPost ? '更新' : '发布' }}
+                        </button>
+                        <button class="publish-btn" @click="savePost('github')">
+                             <i class="fab fa-github">
+
+                             </i> 发布到GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文章列表 -->
+            <div class="posts-container">
+                <div v-if="posts.length === 0" class="empty-state">
+                    <i class="fas fa-edit"></i>
+                    <h3>还没有文章</h3>
+                    <p>点击"写文章"开始你的创作之旅</p>
+                </div>
+
+                <div v-else class="posts-list">
+                    <article v-for="post in sortedPosts" :key="post.id" class="post-card">
+                        <div class="post-header">
+                            <h3 class="post-title">{{ post.title }}</h3>
+                            <div class="post-actions">
+                                <button
+                                    class="edit-btn"
+                                    @click="editPost(post)"
+                                    title="编辑"
+                                >
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button
+                                    class="delete-btn"
+                                    @click="deletePost(post.id)"
+                                    title="删除"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="post-content">
+                            {{ post.content }}
+                        </div>
+
+                        <div class="post-footer">
+                            <div class="post-meta">
+                                <span class="post-date">
+                                    <i class="far fa-calendar"></i>
+                                    {{ formatDate(post.createdAt) }}
+                                </span>
+                                <span class="post-likes" :class="{ liked: post.hasLiked }">
+                                    <button
+                                        class="like-btn"
+                                        @click="toggleLike(post)"
+                                        :title="post.hasLiked ? '取消点赞' : '点赞'"
+                                    >
+                                        <i class="fas fa-heart"></i>
+                                        {{ post.likes }}
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <!-- 浮动按钮 -->
+        <button
+            v-if="!showEditor"
+            class="floating-action-btn"
+            @click="showEditor = true"
+            title="写新文章"
+        >
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
