@@ -1,0 +1,484 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Text', -apple-system, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 3rem;
+            margin: 0;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0 50%; }
+        }
+
+        /* 顶部容器 */
+        .top-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+            margin-bottom: 2rem;
+            gap: 2rem;
+        }
+
+        /* 导航栏样式 */
+        .infinite-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0;
+            width: auto;
+        }
+
+        .infinite-item {
+            position: relative;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .infinite-item.active {
+            color: white;
+            background: rgba(12, 174, 189, 0.3);
+        }
+
+        .infinite-item:hover {
+            background: rgba(12, 174, 189, 0.2);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* 天气时间组件 */
+        .weather-time-widget {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 40px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            min-width: 280px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-time-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .weather-time-widget:hover::before {
+            left: 100%;
+        }
+
+        .weather-time-widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .weather-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .weather-info {
+            flex: 0;
+        }
+
+        .temperature {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .location {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+        }
+
+        .location::before {
+            content: '📍';
+            margin-right: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .time-section {
+            text-align: right;
+            border-left: 1px solid rgba(255,255,255,0.3);
+            padding-left: 1rem;
+            margin-left: 1rem;
+        }
+
+        .time {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+        }
+
+        .date {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* 名言问候 */
+        .greeting-widget {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 1.5rem;
+            border-radius: 40px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            min-width: 300px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .greeting-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .greeting-widget:hover::before {
+            left: 100%;
+        }
+
+        .greeting-widget:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .quote-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            opacity: 0.7;
+        }
+
+        .greeting-content {
+            flex: 1;
+        }
+
+        .greeting {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .quote {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-style: italic;
+            line-height: 1.4;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .quote::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -0.2rem;
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+
+
+        /* 页面容器 */
+        .page-container {
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .page {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 帖子页面样式 */
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #23a6d5;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateX(10px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .post-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .post-content {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* 空间页面样式 */
+        .space-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .space-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .space-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .space-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .space-card:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .space-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .space-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 我的页面样式 */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-bio {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #6bcf7f, #4d96ff);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: #667eea;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .top-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .weather-time-widget,
+            .greeting-widget {
+                min-width: auto;
+                width: 100%;
+                max-width: 500px;
+            }
+
+            .infinite-nav {
+                order: -1; /* 导航栏放在最上面 */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .space-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .infinite-item {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
