@@ -1,7 +1,29 @@
-{
-  "title": "helloworld!",
-  "content": {
-
+[
+  {
+    "id": "1",
+    "title": "helloworld!",
+    "content": "www.baidu.com",
+    "likes": 1,
+    "hasLiked": true,
+    "createdAt": "2024-01-01T10:00:00.000Z",
+    "updatedAt": "2024-01-01T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "title": "第二篇文章",
+    "content": "www.example.comhhasdkahkdhaskdhasdhaskhdkhdkshadkshdkasd",
+    "likes": 4,
+    "hasLiked": false,
+    "createdAt": "2024-01-02T11:00:00.000Z",
+    "updatedAt": "2025-11-01T07:11:05.384Z"
+  },
+  {
+    "id": "1761982263010",
+    "title": "22",
+    "content": "222",
+    "likes": 0,
+    "hasLiked": false,
+    "createdAt": "2025-11-01T07:31:03.010Z",
+    "updatedAt": "2025-11-01T07:31:03.010Z"
   }
-
-}
+]
