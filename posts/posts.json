@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": "1762015454841",
+    "title": "hello world!",
+    "content": "hello world!",
+    "likes": 0,
+    "hasLiked": false,
+    "createdAt": "2025-11-01T16:44:14.841Z",
+    "updatedAt": "2025-11-01T16:44:14.843Z"
+  }
+]
