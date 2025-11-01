@@ -25,8 +25,8 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:31:03.010Z",
     "updatedAt": "2025-11-01T07:31:03.010Z"
-  },
-  {
+  }
+]  {
     "id": "1761982638722",
     "title": "66",
     "content": "66",
@@ -34,8 +34,8 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:37:18.722Z",
     "updatedAt": "2025-11-01T07:37:18.722Z"
-  },
-  {
+  }
+]  {
     "id": "1761982694446",
     "title": "555",
     "content": "555",
@@ -43,8 +43,8 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:38:14.446Z",
     "updatedAt": "2025-11-01T07:38:14.446Z"
-  },
-  {
+  }
+]  {
     "id": "1761982742424",
     "title": "第一",
     "content": "SD分",
@@ -52,32 +52,5 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:39:02.424Z",
     "updatedAt": "2025-11-01T07:39:02.424Z"
-  },
-  {
-    "id": "1761982840128",
-    "title": "去",
-    "content": "去",
-    "likes": 0,
-    "hasLiked": false,
-    "createdAt": "2025-11-01T07:40:40.128Z",
-    "updatedAt": "2025-11-01T07:40:40.129Z"
-  }
-]  {
-    "id": "1761982904703",
-    "title": "555",
-    "content": "5555",
-    "likes": 0,
-    "hasLiked": false,
-    "createdAt": "2025-11-01T07:41:44.703Z",
-    "updatedAt": "2025-11-01T07:41:44.704Z"
-  }
-]  {
-    "id": "1761983054369",
-    "title": "测试",
-    "content": "测试",
-    "likes": 1,
-    "hasLiked": true,
-    "createdAt": "2025-11-01T07:44:14.369Z",
-    "updatedAt": "2025-11-01T07:44:14.369Z"
   }
 ]
