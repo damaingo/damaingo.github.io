@@ -61,8 +61,8 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:40:40.128Z",
     "updatedAt": "2025-11-01T07:40:40.129Z"
-  },
-  {
+  }
+]  {
     "id": "1761982904703",
     "title": "555",
     "content": "5555",
@@ -70,8 +70,8 @@
     "hasLiked": false,
     "createdAt": "2025-11-01T07:41:44.703Z",
     "updatedAt": "2025-11-01T07:41:44.704Z"
-  },
-  {
+  }
+]  {
     "id": "1761983054369",
     "title": "测试",
     "content": "测试",
@@ -79,14 +79,5 @@
     "hasLiked": true,
     "createdAt": "2025-11-01T07:44:14.369Z",
     "updatedAt": "2025-11-01T07:44:14.369Z"
-  },
-  {
-    "id": "1761983123617",
-    "title": "测试",
-    "content": "行",
-    "likes": 0,
-    "hasLiked": false,
-    "createdAt": "2025-11-01T07:45:23.617Z",
-    "updatedAt": "2025-11-01T07:45:23.617Z"
   }
 ]
