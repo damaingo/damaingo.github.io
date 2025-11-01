@@ -299,6 +299,22 @@
             color: #555;
             line-height: 1.6;
         }
+        .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #ddd;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
 
         /* 空间页面样式 */
         .space-grid {

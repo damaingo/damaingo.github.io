@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>无限流动导航</title>
+    <title>个人博客</title>
+    <!-- 引入 Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
    <link href="main.css" rel="stylesheet">
 </head>
 <body>
@@ -17,7 +23,7 @@
             </div>
             <div class="time-section">
                 <div class="time" id="current-time">14:30:45</div>
-                <div class="date" id="current-date">2024年1月15日 周一</div>
+                <div class="date" id="current-date">202224年1月15日 周一</div>
             </div>
         </div>
 
@@ -44,33 +50,29 @@
         <!-- 帖子页面 -->
         <div id="posts-page" class="page posts-page active">
             <h2 style="color: #333; margin-bottom: 2rem;">最新帖子</h2>
+                <!-- 空状态元素 - 默认显示 -->
+                <div class="empty-state">
+                    <i class="fas fa-edit"></i>
+                        <h3>还没有文章</h3>
+                      <p>点击"写文章"开始你的创作之旅</p>
+                 </div>
+
+
             <div class="post-card">
                 <div class="post-header">
-                    <h3 class="post-title">探索现代Web设计趋势</h3>
-                    <div class="post-meta">2小时前 · 128浏览</div>
+                    <h3 class="post-title">hello world!</h3>
+                    <div class="post-meta">10年前 · 99999浏览</div>
                 </div>
                 <div class="post-content">
-                    玻璃拟态、毛玻璃效果、微交互设计正在成为现代网页设计的主流趋势...
+                    hello world!
                 </div>
             </div>
-            <div class="post-card">
-                <div class="post-header">
-                    <h3 class="post-title">CSS动画性能优化指南</h3>
-                    <div class="post-meta">5小时前 · 89浏览</div>
-                </div>
-                <div class="post-content">
-                    了解如何使用transform和opacity来创建高性能的CSS动画，避免布局重排...
-                </div>
+            <div id="posts-container">
+                    <!-- 文章会通过 JS 动态渲染到这里 -->
+
             </div>
-            <div class="post-card">
-                <div class="post-header">
-                    <h3 class="post-title">响应式设计的最佳实践</h3>
-                    <div class="post-meta">1天前 · 256浏览</div>
-                </div>
-                <div class="post-content">
-                    从移动端优先到容器查询，探索响应式设计的最新技术和最佳实践...
-                </div>
-            </div>
+
+
         </div>
 
         <!-- 空间页面 -->
@@ -114,8 +116,8 @@
         <div id="profile-page" class="page profile-page">
             <div class="profile-header">
                 <div class="profile-avatar">👤</div>
-                <h1 class="profile-name">张三</h1>
-                <p class="profile-bio">前端开发者 | UI设计爱好者 | 技术博主</p>
+                <h1 class="profile-name">大钱</h1>
+                <p class="profile-bio">地球爱护者 | 多吃多拉者 | 随地就睡</p>
             </div>
 
             <div class="stats-grid">
@@ -170,8 +172,7 @@
         </div>
     </div>
 
-    <script src="main.js">
+ <script type="module" src="main.js"></script>
 
-    </script>
 </body>
 </html>
