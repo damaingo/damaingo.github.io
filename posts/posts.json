@@ -1,11 +1,1 @@
-[
-  {
-    "id": "1",
-    "title": "helloworld!",
-    "content": "www.baidu.com",
-    "likes": 0,
-    "hasLiked": false,
-    "createdAt": "2024-01-01T10:00:00.000Z",
-    "updatedAt": "2024-01-01T10:00:00.000Z"
-  }
-]
+[]
