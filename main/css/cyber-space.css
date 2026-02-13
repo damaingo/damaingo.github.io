@@ -1,0 +1,148 @@
+/* ========== 赛博空间页面 ========== */
+/* 对应: index.html - space-page, space-card, cyber-space-grid */
+
+.cyber-space-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+/* 赛博空间卡片 */
+.space-card {
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.card-hologram {
+    background: rgba(8, 20, 30, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+/* 不同卡片不同主题色 */
+.space-card.music .card-hologram {
+    border-color: #00ffff;
+}
+
+.space-card.knowledge .card-hologram {
+    border-color: #ff44aa;
+}
+
+.space-card.code .card-hologram {
+    border-color: #00ffaa;
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 20px currentColor);
+    animation: card-float 4s ease-in-out infinite;
+}
+
+.space-card.music .card-icon {
+    color: #00ffff;
+}
+
+.space-card.knowledge .card-icon {
+    color: #ff44aa;
+}
+
+.space-card.code .card-icon {
+    color: #00ffaa;
+}
+
+.card-hologram h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.space-card.music h3 {
+    text-shadow: 0 0 10px cyan;
+}
+
+.space-card.knowledge h3 {
+    text-shadow: 0 0 10px #ff44aa;
+}
+
+.space-card.code h3 {
+    text-shadow: 0 0 10px #00ffaa;
+}
+
+.card-stats {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #a0f0fa;
+}
+
+.card-scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: card-scan 6s infinite;
+    pointer-events: none;
+}
+
+@keyframes card-scan {
+    0% { transform: translateX(-100%); }
+    20% { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.card-hologram:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .cyber-space-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .card-icon {
+        font-size: 2.8rem;
+    }
+
+    .card-hologram h3 {
+        font-size: 1.3rem;
+    }
+}

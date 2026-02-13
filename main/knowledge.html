@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博知识库 · 全息阅读器</title>
+
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- PDF 阅读器 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- Markdown 渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <style>
+        /* ========== 赛博知识库 · 全息阅读器 ========== */
+
+        /* ----- 全局赛博基调 ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', 'Courier New', 'SF Pro Text', -apple-system, monospace;
+            background: #0a0c0f;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 128, 0.08) 0%, transparent 30%),
+                linear-gradient(135deg, #0a0c0f 0%, #1a1e24 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        /* 全局网格 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 全局扫描线 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0) 0px,
+                rgba(0, 255, 255, 0.02) 1px,
+                transparent 2px,
+                transparent 6px
+            );
+            pointer-events: none;
+            animation: scan 12s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* ===== 主容器 ===== */
+        .cyber-knowledge-container {
+            width: 100%;
+            max-width: 1400px;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .cyber-knowledge-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cyber-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cyber-back-btn i {
+            color: #ff44aa;
+            text-shadow: 0 0 8px #ff44aa;
+        }
+
+        .cyber-back-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            border-color: #ff44aa;
+        }
+
+        /* 知识信标 */
+        .cyber-knowledge-beacon {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(8, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+        }
+
+        .beacon-pulse {
+            width: 12px;
+            height: 12px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px cyan;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+
+        .beacon-text {
+            color: #a0f0fa;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 全息标题 ===== */
+        .cyber-hologram-title {
+            margin-bottom: 2.5rem;
+            position: relative;
+            text-align: center;
+        }
+
+        .glitch-main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #00ffff;
+            text-shadow:
+                3px 3px 0 #ff44aa,
+                -3px -3px 0 #00ffaa;
+            animation: title-glitch 4s infinite;
+            letter-spacing: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes title-glitch {
+            0%, 100% { transform: none; }
+            7% { transform: skew(-0.8deg, -0.4deg); opacity: 0.95; }
+            10% { transform: none; }
+            30% { transform: skew(0.6deg, 0.3deg); text-shadow: -4px 0 #ff44aa, 4px 0 #00ffff; }
+        }
+
+        .title-sub {
+            color: #a0f0fa;
+            font-size: 1rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* ===== 统计面板 ===== */
+        .cyber-stats-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #ff44aa;
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px cyan;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: #a0f0fa;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 主布局：侧边栏 + 阅读区 ===== */
+        .cyber-knowledge-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            position: relative;
+        }
+
+        /* ===== 左侧：知识库导航 ===== */
+        .cyber-knowledge-sidebar {
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: fit-content;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 2rem;
+        }
+
+        /* 搜索栏 */
+        .cyber-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .cyber-search-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 0.8rem 1.2rem;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .cyber-search-input::placeholder {
+            color: rgba(160, 240, 250, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .cyber-search-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-search-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #ff44aa;
+            color: #ff44aa;
+        }
+
+        /* 分类导航 */
+        .cyber-categories {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00ffff;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            color: #a0f0fa;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #ff44aa;
+            transform: translateX(5px);
+        }
+
+        .category-item.active {
+            background: rgba(255, 68, 170, 0.15);
+            border-color: #ff44aa;
+            color: #ff99ee;
+        }
+
+        .category-count {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* 知识列表 */
+        .knowledge-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .knowledge-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .knowledge-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .knowledge-item:hover::before {
+            left: 100%;
+        }
+
+        .knowledge-item:hover {
+            background: rgba(0, 255, 255, 0.08);
+            border-color: #ff44aa;
+            transform: translateX(5px);
+        }
+
+        .knowledge-item.active {
+            background: rgba(255, 68, 170, 0.15);
+            border-color: #ff44aa;
+        }
+
+        .knowledge-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00ffff, #ff44aa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .knowledge-icon i {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .knowledge-info {
+            flex: 1;
+        }
+
+        .knowledge-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.2rem;
+        }
+
+        .knowledge-meta {
+            display: flex;
+            gap: 0.8rem;
+            color: #a0f0fa;
+            font-size: 0.7rem;
+        }
+
+        /* ===== 右侧：全息阅读器 ===== */
+        .cyber-reader {
+            background: rgba(8, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.15);
+            min-height: 600px;
+        }
+
+        .reader-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* 阅读器头部 */
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .reader-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .reader-book-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 10px cyan;
+        }
+
+        .reader-book-meta {
+            color: #a0f0fa;
+            font-size: 0.85rem;
+        }
+
+        .reader-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reader-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reader-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #ff44aa;
+            color: #ff44aa;
+        }
+
+        /* 阅读器内容区 */
+        .reader-content {
+            position: relative;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 1rem;
+            color: #d0f0ff;
+            line-height: 1.8;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            scrollbar-width: thin;
+            scrollbar-color: #00ffff rgba(0, 255, 255, 0.1);
+        }
+
+        .reader-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .reader-content::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .reader-content::-webkit-scrollbar-thumb {
+            background: #00ffff;
+            border-radius: 3px;
+            box-shadow: 0 0 10px cyan;
+        }
+
+        /* PDF 阅读器 */
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: none;
+            background: #0a0c0f;
+        }
+
+        /* Markdown 样式 */
+        .markdown-body {
+            color: #d0f0ff;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3 {
+            color: #00ffff;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .markdown-body code {
+            background: #1e2a36;
+            color: #ffb86b;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .markdown-body pre {
+            background: #0e1a24;
+            border-left: 4px solid #00ffff;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        /* EPUB 阅读器 */
+        .epub-viewer {
+            width: 100%;
+            height: 600px;
+            border: none;
+            background: #0a0c0f;
+        }
+
+        /* 空状态 */
+        .reader-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #a0f0fa;
+            text-align: center;
+        }
+
+        .reader-empty i {
+            font-size: 4rem;
+            color: #00ffff;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* 进度条 */
+        .reader-progress {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            color: #a0f0fa;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff44aa);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1024px) {
+            .cyber-knowledge-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cyber-knowledge-sidebar {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+
+            .cyber-stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cyber-knowledge-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .glitch-main-title {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+
+            .cyber-stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .reader-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* 禁止选择UI元素 */
+        .cyber-back-btn,
+        .cyber-knowledge-beacon,
+        .stat-card,
+        .category-item,
+        .knowledge-item,
+        .reader-btn,
+        .cyber-search-btn {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* 允许选择阅读内容 */
+        .reader-content,
+        .markdown-body,
+        .pdf-viewer,
+        .epub-viewer {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
+        /* 赛博风选中样式 */
+        ::selection {
+            background: rgba(0, 255, 255, 0.3);
+            color: #ffffff;
+            text-shadow: 0 0 8px cyan;
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-knowledge-container">
+        <!-- 顶部导航 -->
+        <div class="cyber-knowledge-top">
+            <a href="javascript:history.back()" class="cyber-back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回领域</span>
+            </a>
+            <div class="cyber-knowledge-beacon">
+                <div class="beacon-pulse"></div>
+                <span class="beacon-text">全息知识库 · 在线</span>
+            </div>
+        </div>
+
+        <!-- 全息标题 -->
+        <div class="cyber-hologram-title">
+            <h1 class="glitch-main-title" data-text="全息知识库">全息知识库</h1>
+            <div class="title-sub">HOLOGRAPHIC KNOWLEDGE BASE</div>
+        </div>
+
+        <!-- 统计面板 -->
+        <div class="cyber-stats-panel">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="total-books">0</span>
+                    <span class="stat-label">藏书</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="total-docs">0</span>
+                    <span class="stat-label">文档</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="total-courses">0</span>
+                    <span class="stat-label">剧本</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📕</div>
+                <div class="stat-info">
+                    <span class="stat-value" id="total-papers">0</span>
+                    <span class="stat-label">小说</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主布局：侧边栏 + 阅读区 -->
+        <div class="cyber-knowledge-layout">
+            <!-- 左侧：知识库导航 -->
+            <div class="cyber-knowledge-sidebar">
+                <!-- 搜索栏 -->
+                <div class="cyber-search">
+                    <input type="text" class="cyber-search-input" id="search-input" placeholder="搜索知识...">
+                    <button class="cyber-search-btn" id="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- 分类导航 -->
+                <div class="cyber-categories">
+                    <div class="category-title">
+                        <i class="fas fa-tags"></i>
+                        <span>知识分类</span>
+                    </div>
+                    <div class="category-list" id="category-list">
+                        <div class="category-item active" data-category="all">
+                            <span>📚 全部</span>
+                            <span class="category-count" id="count-all">0</span>
+                        </div>
+                        <div class="category-item" data-category="book">
+                            <span>📖 书籍</span>
+                            <span class="category-count" id="count-book">0</span>
+                        </div>
+                        <div class="category-item" data-category="document">
+                            <span>📄 文档</span>
+                            <span class="category-count" id="count-document">0</span>
+                        </div>
+                        <div class="category-item" data-category="script">
+                            <span>🎬 剧本</span>
+                            <span class="category-count" id="count-course">0</span>
+                        </div>
+                        <div class="category-item" data-category="novel">
+                            <span>📕 小说</span>
+                            <span class="category-count" id="count-paper">0</span>
+                        </div>
+                        <div class="category-item" data-category="code">
+                            <span>💻 代码</span>
+                            <span class="category-count" id="count-code">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 知识列表 -->
+                <div class="knowledge-list" id="knowledge-list">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+
+            <!-- 右侧：全息阅读器 -->
+            <div class="cyber-reader">
+                <div class="reader-glow"></div>
+
+                <!-- 阅读器头部 -->
+                <div class="reader-header">
+                    <div class="reader-title">
+                        <span class="reader-book-title" id="reader-title">选择知识节点</span>
+                        <span class="reader-book-meta" id="reader-meta"></span>
+                    </div>
+                    <div class="reader-controls">
+                        <button class="reader-btn" id="fullscreen-btn">
+                            <i class="fas fa-expand"></i>
+                            <span>全息全屏</span>
+                        </button>
+                        <button class="reader-btn" id="download-btn">
+                            <i class="fas fa-download"></i>
+                            <span>下载</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 阅读器内容区 -->
+                <div class="reader-content" id="reader-content">
+                    <div class="reader-empty">
+                        <i class="fas fa-book-open"></i>
+                        <h3>未选择知识节点</h3>
+                        <p style="margin-top: 1rem; opacity: 0.7;">从左侧选择要阅读的书籍或文档</p>
+                    </div>
+                </div>
+
+                <!-- 阅读进度 -->
+                <div class="reader-progress">
+                    <div class="progress-info">
+                        <span>阅读进度</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ========== 赛博知识库 · 全息阅读器 ==========
+    // JSON加载版 - 只读取文件名和格式
+
+    // 知识库数据
+    let knowledgeBase = [];
+    let currentCategory = 'all';
+    let currentItem = null;
+    let searchTerm = '';
+
+    // 初始化PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    // ===== 1. 从knowledge.json加载 =====
+    async function loadKnowledgeBase() {
+    try {
+        const response = await fetch('../posts/knowledge/knowledge.json');
+        const data = await response.json();
+
+        knowledgeBase = data.map(item => ({
+            id: item.id,
+            title: item.title,
+            format: item.format.toLowerCase(),
+            category: item.category || 'document',  // ← 直接读category，没有就默认document
+            file: `../posts/${item.file}`
+        }));
+
+        updateStats();
+        renderCategories();
+        renderKnowledgeList();
+
+    } catch (error) {
+        console.error('加载知识库失败:', error);
+        showEmptyState();
+    }
+}
+
+    // ===== 2. 检测文档类型 =====
+
+    // ===== 3. 显示空状态 =====
+    function showEmptyState() {
+        document.getElementById('total-books').innerHTML = '0';
+        document.getElementById('total-docs').innerHTML = '0';
+        document.getElementById('total-courses').innerHTML = '0';
+        document.getElementById('total-papers').innerHTML = '0';
+
+        document.getElementById('count-all').innerHTML = '0';
+        document.getElementById('count-book').innerHTML = '0';
+        document.getElementById('count-document').innerHTML = '0';
+        document.getElementById('count-course').innerHTML = '0';
+        document.getElementById('count-paper').innerHTML = '0';
+        document.getElementById('count-code').innerHTML = '0';
+
+        document.getElementById('knowledge-list').innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: #a0f0fa;">
+                <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>知识库为空</p>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.6;">请检查 posts/knowledge/knowledge.json</p>
+            </div>
+        `;
+    }
+
+    // ===== 4. 更新统计 =====
+    function updateStats() {
+        document.getElementById('total-books').innerHTML = knowledgeBase.filter(k => k.category === 'book').length;
+        document.getElementById('total-docs').innerHTML = knowledgeBase.filter(k => k.category === 'document').length;
+        document.getElementById('total-courses').innerHTML = knowledgeBase.filter(k => k.category === 'script').length;
+        document.getElementById('total-papers').innerHTML = knowledgeBase.filter(k => k.category === 'novel').length;
+
+        document.getElementById('count-all').innerHTML = knowledgeBase.length;
+        document.getElementById('count-book').innerHTML = knowledgeBase.filter(k => k.category === 'book').length;
+        document.getElementById('count-document').innerHTML = knowledgeBase.filter(k => k.category === 'document').length;
+        document.getElementById('count-course').innerHTML = knowledgeBase.filter(k => k.category === 'script').length;
+        document.getElementById('count-paper').innerHTML = knowledgeBase.filter(k => k.category === 'novel').length;
+        document.getElementById('count-code').innerHTML = knowledgeBase.filter(k => k.category === 'code').length;
+    }
+
+    // ===== 5. 渲染分类 =====
+    function renderCategories() {
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentCategory = item.dataset.category;
+                renderKnowledgeList();
+            });
+        });
+    }
+
+    // ===== 6. 渲染知识列表 =====
+    function renderKnowledgeList() {
+        const listElement = document.getElementById('knowledge-list');
+
+        let filtered = knowledgeBase;
+
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(k => k.category === currentCategory);
+        }
+
+        if (searchTerm) {
+            filtered = filtered.filter(k =>
+                k.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        if (filtered.length === 0) {
+            listElement.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #a0f0fa;">
+                    <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>未找到匹配的知识节点</p>
+                </div>
+            `;
+            return;
+        }
+
+        listElement.innerHTML = filtered.map(item => {
+            const icon = getFileIcon(item.format);
+            const isActive = currentItem?.id === item.id;
+
+            return `
+                <div class="knowledge-item ${isActive ? 'active' : ''}" data-id="${item.id}">
+                    <div class="knowledge-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="knowledge-info">
+                        <div class="knowledge-title">${escapeHtml(item.title)}</div>
+                        <div class="knowledge-meta">
+                            <span>${item.format.toUpperCase()}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        listElement.querySelectorAll('.knowledge-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = parseInt(item.dataset.id);
+                const knowledge = filtered.find(k => k.id === id);
+                if (knowledge) {
+                    openReader(knowledge);
+                }
+            });
+        });
+    }
+
+    // ===== 7. 获取文件图标 =====
+    function getFileIcon(format) {
+        const icons = {
+            'pdf': 'fas fa-file-pdf',
+            'epub': 'fas fa-book',
+            'md': 'fas fa-file-alt',
+            'txt': 'fas fa-file-lines',
+            'doc': 'fas fa-file-word',
+            'docx': 'fas fa-file-word',
+            'js': 'fab fa-js',
+            'py': 'fab fa-python',
+            'java': 'fab fa-java',
+            'cpp': 'fas fa-file-code',
+            'c': 'fas fa-file-code',
+            'h': 'fas fa-file-code',
+            'html': 'fab fa-html5',
+            'css': 'fab fa-css3-alt',
+            'json': 'fas fa-brackets-curly'
+        };
+        return icons[format] || 'fas fa-file';
+    }
+
+    // ===== 8. 打开阅读器 =====
+    function openReader(item) {
+        currentItem = item;
+
+        document.getElementById('reader-title').innerHTML = escapeHtml(item.title);
+        document.getElementById('reader-meta').innerHTML = item.format.toUpperCase();
+
+        const readerContent = document.getElementById('reader-content');
+
+        switch (item.format) {
+            case 'pdf':
+                renderPDF(readerContent, item.file);
+                break;
+            case 'md':
+                renderMarkdown(readerContent, item.file);
+                break;
+            case 'txt':
+                renderText(readerContent, item.file);
+                break;
+            case 'epub':
+                renderEPUB(readerContent, item.file);
+                break;
+            case 'js':
+            case 'py':
+            case 'java':
+            case 'cpp':
+            case 'c':
+            case 'h':
+            case 'html':
+            case 'css':
+            case 'json':
+                renderCode(readerContent, item.file, item.format);
+                break;
+            default:
+                renderUnsupported(readerContent);
+        }
+
+        document.getElementById('download-btn').onclick = () => {
+            window.open(item.file, '_blank');
+        };
+    }
+
+    // ===== 9. 渲染PDF =====
+    function renderPDF(container, url) {
+        container.innerHTML = `
+            <canvas id="pdf-canvas" style="width: 100%; height: auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                <button class="reader-btn" id="prev-page">
+                    <i class="fas fa-chevron-left"></i> 上一页
+                </button>
+                <span style="color: #00ffff;">页码: <span id="page-num">1</span> / <span id="page-count">?</span></span>
+                <button class="reader-btn" id="next-page">
+                    下一页 <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+
+        let pdfDoc = null;
+        let pageNum = 1;
+
+        pdfjsLib.getDocument(url).promise.then(doc => {
+            pdfDoc = doc;
+            document.getElementById('page-count').textContent = doc.numPages;
+            renderPage(pageNum);
+        }).catch(() => {
+            container.innerHTML = `<div class="reader-empty">无法加载PDF文件</div>`;
+        });
+
+        function renderPage(num) {
+            pdfDoc.getPage(num).then(page => {
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({ scale: 1.5 });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+
+                document.getElementById('page-num').textContent = num;
+
+                const progress = (num / pdfDoc.numPages) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+            });
+        }
+
+        setTimeout(() => {
+            document.getElementById('prev-page')?.addEventListener('click', () => {
+                if (pageNum > 1) {
+                    pageNum--;
+                    renderPage(pageNum);
+                }
+            });
+
+            document.getElementById('next-page')?.addEventListener('click', () => {
+                if (pageNum < pdfDoc.numPages) {
+                    pageNum++;
+                    renderPage(pageNum);
+                }
+            });
+        }, 100);
+    }
+
+    // ===== 10. 渲染Markdown =====
+    async function renderMarkdown(container, url) {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            const html = marked.parse(text);
+
+            container.innerHTML = `<div class="markdown-body">${html}</div>`;
+
+            document.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightBlock(block);
+            });
+
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('progress-percent').textContent = '100%';
+
+        } catch (error) {
+            container.innerHTML = `<div class="reader-empty">加载失败</div>`;
+        }
+    }
+
+    // ===== 11. 渲染文本 =====
+    async function renderText(container, url) {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+
+            container.innerHTML = `<pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; color: #d0f0ff;">${escapeHtml(text)}</pre>`;
+
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('progress-percent').textContent = '100%';
+
+        } catch (error) {
+            container.innerHTML = `<div class="reader-empty">加载失败</div>`;
+        }
+    }
+
+    // ===== 12. 渲染代码 =====
+    async function renderCode(container, url, language) {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+
+            container.innerHTML = `<pre><code class="${language}">${escapeHtml(text)}</code></pre>`;
+
+            document.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightBlock(block);
+            });
+
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('progress-percent').textContent = '100%';
+
+        } catch (error) {
+            container.innerHTML = `<div class="reader-empty">加载失败</div>`;
+        }
+    }
+
+    // ===== 13. 渲染EPUB =====
+    function renderEPUB(container, url) {
+        container.innerHTML = `
+            <iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url=${encodeURIComponent(window.location.origin + url)}"
+                    style="width: 100%; height: 600px; border: none; background: #0a0c0f;">
+            </iframe>
+        `;
+
+        document.getElementById('progress-fill').style.width = '50%';
+        document.getElementById('progress-percent').textContent = '50%';
+    }
+
+    // ===== 14. 渲染不支持格式 =====
+    function renderUnsupported(container) {
+        container.innerHTML = `
+            <div class="reader-empty">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>不支持的格式</h3>
+                <p style="margin-top: 1rem;">请下载后使用本地阅读器打开</p>
+            </div>
+        `;
+    }
+
+    // ===== 15. 辅助函数 =====
+    function escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // ===== 16. 初始化事件监听 =====
+    function initEventListeners() {
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+
+        searchBtn.addEventListener('click', () => {
+            searchTerm = searchInput.value;
+            renderKnowledgeList();
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchTerm = searchInput.value;
+                renderKnowledgeList();
+            }
+        });
+
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+            const reader = document.querySelector('.cyber-reader');
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                reader.requestFullscreen();
+            }
+        });
+    }
+
+    // ===== 17. 页面加载完成 =====
+    document.addEventListener('DOMContentLoaded', () => {
+        loadKnowledgeBase();
+        initEventListeners();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神经脉冲 · 赛博阅读</title>
+
+    <!-- Markdown 渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ========== 赛博朋克·文章详情页 ========== */
+
+        /* ----- 全局赛博基调 ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', 'Courier New', 'SF Pro Text', -apple-system, monospace;
+            background: #0a0c0f;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 128, 0.08) 0%, transparent 30%),
+                linear-gradient(135deg, #0a0c0f 0%, #1a1e24 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        /* 全局网格 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 全局扫描线 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0) 0px,
+                rgba(0, 255, 255, 0.02) 1px,
+                transparent 2px,
+                transparent 6px
+            );
+            pointer-events: none;
+            animation: scan 12s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* ===== 顶部赛博返回栏 ===== */
+        .cyber-top-bar {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 20;
+        }
+
+        .cyber-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cyber-back-btn i {
+            font-size: 1rem;
+            color: #ff44aa;
+            text-shadow: 0 0 8px #ff44aa;
+        }
+
+        .cyber-back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .cyber-back-btn:hover::before {
+            left: 100%;
+        }
+
+        .cyber-back-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            border-color: #ff44aa;
+        }
+
+        /* 全息信标 */
+        .cyber-beacon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a0f0fa;
+            font-size: 0.85rem;
+            background: rgba(8, 20, 30, 0.5);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 68, 170, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .beacon-pulse {
+            width: 10px;
+            height: 10px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px cyan;
+            animation: beacon-pulse 1.5s infinite;
+        }
+
+        @keyframes beacon-pulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 25px cyan; }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+
+        /* ===== 主文章容器 - 全息数据板 ===== */
+        .cyber-post-hologram {
+            width: 100%;
+            max-width: 1000px;
+            position: relative;
+            z-index: 15;
+            margin: 0 auto;
+        }
+
+        /* 文章主体 - 多层嵌套赛博效果 */
+        .cyber-post-core {
+            background: rgba(12, 22, 32, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 0 50px rgba(0, 255, 255, 0.15),
+                inset 0 0 30px rgba(0, 255, 255, 0.05);
+            animation: hologram-enter 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes hologram-enter {
+            0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 动态边框 */
+        .cyber-post-core::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #00ffff, #ff44aa, #00ffff, #ff44aa);
+            border-image-slice: 1;
+            pointer-events: none;
+            animation: border-rotate 8s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes border-rotate {
+            0% { border-image-source: linear-gradient(0deg, #00ffff, #ff44aa, #00ffff, #ff44aa); }
+            50% { border-image-source: linear-gradient(180deg, #ff44aa, #00ffff, #ff44aa, #00ffff); }
+            100% { border-image-source: linear-gradient(360deg, #00ffff, #ff44aa, #00ffff, #ff44aa); }
+        }
+
+        /* 数据流扫描线 */
+        .cyber-post-core::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff44aa, transparent);
+            animation: data-stream 6s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes data-stream {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ===== 文章头部 ===== */
+        .cyber-post-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+        }
+
+        /* 故障标题 */
+        .cyber-post-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #00ffff;
+            text-shadow:
+                2px 2px 0 #ff44aa,
+                -2px -2px 0 #00ffaa;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            animation: title-glitch 4s infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        @keyframes title-glitch {
+            0%, 100% { transform: none; text-shadow: 2px 2px 0 #ff44aa, -2px -2px 0 #00ffaa; }
+            7% { transform: skew(-0.5deg, -0.3deg); opacity: 0.9; }
+            10% { transform: none; }
+            30% { transform: skew(0.3deg, 0.2deg); text-shadow: -3px 0 #ff44aa, 3px 0 #00ffff; }
+        }
+
+        /* 元数据面板 */
+        .cyber-post-meta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .cyber-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 1.2rem;
+            background: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 30px;
+            color: #a0f0fa;
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-meta-item i {
+            color: #ff44aa;
+            text-shadow: 0 0 5px #ff44aa;
+        }
+
+        .cyber-meta-item:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #ff44aa;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        /* ===== 文章内容 - 赛博阅读区 ===== */
+        .cyber-post-content {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .cyber-markdown {
+            color: #ccffff;
+            font-family: 'Courier New', 'SF Mono', monospace;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Markdown 赛博化样式 */
+        .cyber-markdown h1 {
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px cyan;
+            margin: 2.5rem 0 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255, 68, 170, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .cyber-markdown h2 {
+            font-size: 1.7rem;
+            color: #ff99ee;
+            margin: 2rem 0 1rem;
+            border-left: 4px solid #ff44aa;
+            padding-left: 1rem;
+        }
+
+        .cyber-markdown h3 {
+            font-size: 1.4rem;
+            color: #a0f0fa;
+            margin: 1.8rem 0 0.8rem;
+        }
+
+        .cyber-markdown p {
+            margin: 1.5rem 0;
+            color: #d0f0ff;
+            line-height: 1.8;
+        }
+
+        .cyber-markdown a {
+            color: #00ffff;
+            text-decoration: none;
+            border-bottom: 1px dashed #ff44aa;
+            transition: all 0.2s ease;
+        }
+
+        .cyber-markdown a:hover {
+            color: #ff44aa;
+            border-bottom-style: solid;
+            text-shadow: 0 0 8px #ff44aa;
+        }
+
+        .cyber-markdown code {
+            background: #1e2a36;
+            color: #ffb86b;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.1);
+        }
+
+        .cyber-markdown pre {
+            background: #0e1a24;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-left: 4px solid #00ffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .cyber-markdown pre code {
+            background: transparent;
+            color: #e2e8f0;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            font-size: 0.95rem;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+        }
+
+        .cyber-markdown blockquote {
+            border-left: 4px solid #ff44aa;
+            background: linear-gradient(90deg, rgba(255, 68, 170, 0.1), transparent);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+            color: #e0f0ff;
+            font-style: italic;
+            position: relative;
+        }
+
+        .cyber-markdown blockquote::before {
+            content: '“';
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            font-size: 3rem;
+            color: rgba(255, 68, 170, 0.3);
+            font-family: serif;
+        }
+
+        .cyber-markdown ul,
+        .cyber-markdown ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .cyber-markdown li {
+            margin: 0.8rem 0;
+            color: #d0f0ff;
+        }
+
+        .cyber-markdown li::marker {
+            color: #ff44aa;
+        }
+
+        .cyber-markdown img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            margin: 2rem 0;
+            transition: all 0.4s ease;
+            cursor: zoom-in;
+            filter: drop-shadow(0 0 10px cyan);
+        }
+
+        .cyber-markdown img:hover {
+            border-color: #ff44aa;
+            transform: scale(1.02);
+            box-shadow: 0 0 50px rgba(255, 68, 170, 0.3);
+        }
+
+        .cyber-markdown hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff44aa, transparent);
+            margin: 3rem 0;
+            opacity: 0.5;
+        }
+
+        .cyber-markdown table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .cyber-markdown th {
+            background: rgba(0, 255, 255, 0.15);
+            color: #00ffff;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 5px cyan;
+        }
+
+        .cyber-markdown td {
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            color: #d0f0ff;
+        }
+
+        /* ===== 文章底部 - 标签与信号 ===== */
+        .cyber-post-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cyber-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .cyber-tag {
+            background: rgba(255, 68, 170, 0.1);
+            border: 1px solid #ff44aa;
+            color: #ff99ee;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-tag::before {
+            content: '#';
+            margin-right: 4px;
+            color: #00ffff;
+        }
+
+        .cyber-tag:hover {
+            background: rgba(255, 68, 170, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 68, 170, 0.3);
+        }
+
+        .cyber-signal {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #a0f0fa;
+            font-size: 0.85rem;
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 3px;
+        }
+
+        .signal-bar {
+            width: 4px;
+            height: 12px;
+            background: rgba(0, 255, 255, 0.3);
+            animation: signal-pulse 1.5s infinite;
+        }
+
+        .signal-bar:nth-child(1) { animation-delay: 0s; height: 12px; }
+        .signal-bar:nth-child(2) { animation-delay: 0.2s; height: 16px; }
+        .signal-bar:nth-child(3) { animation-delay: 0.4s; height: 20px; }
+        .signal-bar:nth-child(4) { animation-delay: 0.6s; height: 24px; }
+        .signal-bar:nth-child(5) { animation-delay: 0.8s; height: 28px; }
+
+        @keyframes signal-pulse {
+            0%, 100% { background: rgba(0, 255, 255, 0.3); box-shadow: none; }
+            50% { background: #00ffff; box-shadow: 0 0 15px cyan; }
+        }
+
+        /* ===== 侧边数据面板 ===== */
+        .cyber-data-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cyber-data-panel {
+            background: rgba(8, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-data-panel:hover {
+            border-color: #ff44aa;
+            background: rgba(255, 68, 170, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .panel-icon {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .panel-label {
+            color: #a0f0fa;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.3rem;
+        }
+
+        .panel-value {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 8px cyan;
+        }
+
+        /* ===== 相关推荐 ===== */
+        .cyber-related {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .related-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #00ffff;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .related-item {
+            background: rgba(8, 20, 30, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .related-item:hover {
+            border-color: #ff44aa;
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .related-item h4 {
+            color: #00ffff;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .related-item p {
+            color: #a0f0fa;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* ===== 加载状态 ===== */
+        .cyber-loading {
+            width: 100%;
+            max-width: 800px;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            color: #00ffff;
+        }
+
+        .cyber-loading i {
+            font-size: 3rem;
+            color: #ff44aa;
+            margin-bottom: 1.5rem;
+            animation: cyber-spin 2s linear infinite;
+        }
+
+        @keyframes cyber-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cyber-loading p {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px cyan;
+        }
+
+        /* ===== 错误状态 ===== */
+        .cyber-error {
+            width: 100%;
+            max-width: 800px;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(8, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid #ff44aa;
+            border-radius: 16px;
+            color: #ff99ee;
+            text-align: center;
+        }
+
+        .cyber-error i {
+            font-size: 3rem;
+            color: #ff44aa;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px #ff44aa;
+        }
+
+        .cyber-error h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff44aa;
+            letter-spacing: 3px;
+        }
+
+        .cyber-error p {
+            color: #a0f0fa;
+            margin-bottom: 2rem;
+        }
+
+        .cyber-error-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 2rem;
+            background: rgba(255, 68, 170, 0.2);
+            border: 1px solid #ff44aa;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-error-btn:hover {
+            background: rgba(255, 68, 170, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 68, 170, 0.4);
+        }
+
+        /* ===== 图片灯箱 ===== */
+        .cyber-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            cursor: pointer;
+            animation: lightbox-fade-in 0.3s ease;
+        }
+
+        .cyber-lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 3px solid rgba(0, 255, 255, 0.5);
+            border-radius: 8px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            animation: lightbox-zoom 0.3s ease;
+        }
+
+        @keyframes lightbox-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes lightbox-zoom {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes lightbox-fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* ===== 响应式设计 ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .cyber-post-core {
+                padding: 1.8rem;
+            }
+
+            .cyber-post-title {
+                font-size: 1.8rem;
+            }
+
+            .cyber-post-meta {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .cyber-data-panels {
+                grid-template-columns: 1fr;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cyber-top-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cyber-post-core {
+                padding: 1.2rem;
+            }
+
+            .cyber-post-title {
+                font-size: 1.5rem;
+            }
+
+            .cyber-markdown {
+                font-size: 0.95rem;
+            }
+
+            .cyber-markdown h1 {
+                font-size: 1.5rem;
+            }
+
+            .cyber-markdown h2 {
+                font-size: 1.3rem;
+            }
+
+            .cyber-markdown pre {
+                padding: 1rem;
+            }
+
+            .cyber-post-footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* 禁止选择UI元素，允许选择内容 */
+        .cyber-back-btn,
+        .cyber-beacon,
+        .cyber-meta-item,
+        .cyber-tag,
+        .cyber-signal,
+        .cyber-data-panel,
+        .related-item,
+        .panel-icon,
+        .panel-label,
+        .signal-bars,
+        .cyber-loading i,
+        .cyber-loading p,
+        .cyber-error i,
+        .cyber-error h3,
+        .cyber-error-btn {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* 允许复制文章内容 */
+        .cyber-markdown,
+        .cyber-markdown *,
+        .cyber-post-title,
+        pre, code {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
+        /* 赛博风选中样式 */
+        ::selection {
+            background: rgba(0, 255, 255, 0.3);
+            color: #ffffff;
+            text-shadow: 0 0 8px cyan;
+        }
+    </style>
+</head>
+<body>
+    <!-- 赛博顶部栏 -->
+    <div class="cyber-top-bar">
+        <a href="javascript:history.back()" class="cyber-back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>← 返回数据流</span>
+        </a>
+        <div class="cyber-beacon">
+            <div class="beacon-pulse"></div>
+            <span>神经接驳 · 在线</span>
+        </div>
+    </div>
+
+    <!-- 文章容器 -->
+    <div id="post-detail" class="cyber-post-hologram">
+        <div class="cyber-loading">
+            <i class="fas fa-sync-alt"></i>
+            <p>正在解码神经信号...</p>
+        </div>
+    </div>
+
+    <script>
+        // ========== 赛博文章加载器 ==========
+
+        // 配置marked
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+            sanitize: false,
+            highlight: function(code, lang) {
+                if (window.hljs) {
+                    try {
+                        return hljs.highlight(code, { language: lang }).value;
+                    } catch (e) {
+                        return code;
+                    }
+                }
+                return code;
+            }
+        });
+
+        // 从URL获取文章ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        if (!postId) {
+            showCyberError('神经信号丢失: 未检测到文章ID');
+        } else {
+            console.log('正在接驳神经脉冲:', postId);
+            loadCyberPost();
+        }
+
+        // 加载赛博文章
+        async function loadCyberPost() {
+            try {
+                // 尝试读取MD文件
+                const mdResponse = await fetch(`../posts/content/${postId}.md`);
+
+                if (mdResponse.ok) {
+                    const markdownContent = await mdResponse.text();
+                    const htmlContent = renderCyberMarkdown(markdownContent);
+
+                    // 获取元数据
+                    const metaResponse = await fetch('../posts/posts.json');
+                    const allPosts = await metaResponse.json();
+                    const postMeta = allPosts.find(p => p.id === postId);
+
+                    renderCyberPost(postMeta, htmlContent);
+                } else {
+                    // 从JSON加载
+                    await loadFromCyberJSON();
+                }
+            } catch (error) {
+                console.error('神经信号解码失败:', error);
+                showCyberError('神经信号解码失败');
+            }
+        }
+
+        // 从JSON加载
+        async function loadFromCyberJSON() {
+            try {
+                const response = await fetch('../posts/posts.json');
+                const allPosts = await response.json();
+                const post = allPosts.find(p => p.id === postId);
+
+                if (post) {
+                    const htmlContent = renderCyberMarkdown(post.content || '');
+                    renderCyberPost(post, htmlContent);
+                } else {
+                    showCyberError('神经信号不存在: 文章ID未注册');
+                }
+            } catch (error) {
+                console.error('量子态读取失败:', error);
+                showCyberError('量子态数据损坏');
+            }
+        }
+
+        // 渲染赛博文章
+        function renderCyberPost(postMeta, htmlContent) {
+            if (!postMeta) {
+                document.getElementById('post-detail').innerHTML = `
+                    <div class="cyber-post-core">
+                        <div class="cyber-markdown">${htmlContent}</div>
+                    </div>
+                `;
+            } else {
+                // 模拟数据
+                const readTime = postMeta.readTime || Math.ceil(htmlContent.length / 1000);
+                const views = postMeta.views || Math.floor(Math.random() * 1000) + 500;
+                const likes = postMeta.likes || Math.floor(Math.random() * 100) + 50;
+
+                document.getElementById('post-detail').innerHTML = `
+                    <div class="cyber-post-core">
+                        <!-- 文章头部 -->
+                        <div class="cyber-post-header">
+                            <h1 class="cyber-post-title">${escapeCyber(postMeta.title || '未命名神经脉冲')}</h1>
+                            <div class="cyber-post-meta">
+                                <span class="cyber-meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    📡 ${formatCyberDate(postMeta.createdAt)}
+                                </span>
+                                <span class="cyber-meta-item">
+                                    <i class="fas fa-code-branch"></i>
+                                    🧬 版本 ${postMeta.version || '2.0.6'}
+                                </span>
+                                <span class="cyber-meta-item">
+                                    <i class="fas fa-eye"></i>
+                                    👁️ ${views} 次
+                                </span>
+                                <span class="cyber-meta-item">
+                                    <i class="fas fa-heart"></i>
+                                    ❤️ ${likes} 次
+                                </span>
+                                <span class="cyber-meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    ⏱️ ${readTime} 脉冲周期
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 文章内容 -->
+                        <div class="cyber-post-content">
+                            <div class="cyber-markdown">${htmlContent}</div>
+                        </div>
+
+                        <!-- 数据面板 -->
+                        <div class="cyber-data-panels">
+                            <div class="cyber-data-panel">
+                                <div class="panel-icon">📊</div>
+                                <div class="panel-label">数字模拟</div>
+                                <div class="panel-value">${Math.floor(Math.random() * 30 + 70)}%</div>
+                            </div>
+                            <div class="cyber-data-panel">
+                                <div class="panel-icon">🔬</div>
+                                <div class="panel-label">神经元激活</div>
+                                <div class="panel-value">${Math.floor(Math.random() * 20 + 80)}%</div>
+                            </div>
+                            <div class="cyber-data-panel">
+                                <div class="panel-icon">⚡</div>
+                                <div class="panel-label">能量脉冲</div>
+                                <div class="panel-value">${Math.floor(Math.random() * 50 + 150)}MHz</div>
+                            </div>
+                        </div>
+
+                        <!-- 文章底部 -->
+                        <div class="cyber-post-footer">
+                            ${postMeta.tags && postMeta.tags.length > 0 ? `
+                                <div class="cyber-tags">
+                                    ${postMeta.tags.map(tag => `
+                                        <span class="cyber-tag">${escapeCyber(tag)}</span>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="cyber-tags">
+                                    <span class="cyber-tag">code</span>
+                                    <span class="cyber-tag">markdown</span>
+                                    <span class="cyber-tag">github</span>
+                                </div>
+                            `}
+
+                            <div class="cyber-signal">
+                                <span>信号强度</span>
+                                <div class="signal-bars">
+                                    <div class="signal-bar"></div>
+                                    <div class="signal-bar"></div>
+                                    <div class="signal-bar"></div>
+                                    <div class="signal-bar"></div>
+                                    <div class="signal-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 相关推荐 -->
+                        <div class="cyber-related">
+                            <div class="related-title">
+                                <i class="fas fa-project-diagram"></i>
+                                <span>关联神经链路</span>
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="related-grid">
+                                <div class="related-item" onclick="window.location.href='posts.html?id=${1770390858183}'">
+                                    <h4>葫芦娃</h4>
+                                    <p>连接</p>
+                                </div>
+                                <div class="related-item" onclick="window.location.href='posts.html?id=${postId-2}'">
+                                    <h4>白雪公主</h4>
+                                    <p>连接</p>
+                                </div>
+                                <div class="related-item" onclick="window.location.href='posts.html?id=${postId-3}'">
+                                    <h4>小红帽</h4>
+                                    <p>连接</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // 更新页面标题
+                document.title = `${postMeta.title} · 赛博神经漫游`;
+
+                // 添加图片灯箱
+                addCyberLightbox();
+
+                // 应用代码高亮
+                if (window.hljs) {
+                    document.querySelectorAll('.cyber-markdown pre code').forEach(block => {
+                        hljs.highlightBlock(block);
+                    });
+                }
+            }
+        }
+
+        // 渲染Markdown
+        function renderCyberMarkdown(content) {
+            if (!content) return '<p class="cyber-empty">⧉ 无神经信号数据</p>';
+            try {
+                return marked.parse(content);
+            } catch (error) {
+                console.error('Markdown渲染失败:', error);
+                return `<p>${escapeCyber(content)}</p>`;
+            }
+        }
+
+        // 格式化日期
+        function formatCyberDate(dateString) {
+            if (!dateString) return '未知时间轴';
+            try {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hour = String(date.getHours()).padStart(2, '0');
+                const minute = String(date.getMinutes()).padStart(2, '0');
+                return `${year}.${month}.${day} ${hour}:${minute}`;
+            } catch {
+                return dateString;
+            }
+        }
+
+        // 转义HTML
+        function escapeCyber(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // 显示错误
+        function showCyberError(message) {
+            document.getElementById('post-detail').innerHTML = `
+                <div class="cyber-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>神经元接驳失败</h3>
+                    <p>${escapeCyber(message)}</p>
+                    <a href="javascript:history.back()" class="cyber-error-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        返回
+                    </a>
+                </div>
+            `;
+        }
+
+        // 图片灯箱
+        function addCyberLightbox() {
+            document.querySelectorAll('.cyber-markdown img').forEach(img => {
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', function() {
+                    const lightbox = document.createElement('div');
+                    lightbox.className = 'cyber-lightbox';
+
+                    const enlargedImg = document.createElement('img');
+                    enlargedImg.src = this.src;
+                    enlargedImg.alt = this.alt || '赛博神经影像';
+
+                    lightbox.appendChild(enlargedImg);
+                    document.body.appendChild(lightbox);
+
+                    lightbox.addEventListener('click', (e) => {
+                        if (e.target === lightbox || e.target === enlargedImg) {
+                            lightbox.style.animation = 'lightbox-fade-out 0.3s ease';
+                            setTimeout(() => {
+                                document.body.removeChild(lightbox);
+                            }, 300);
+                        }
+                    });
+
+                    document.addEventListener('keydown', function escHandler(e) {
+                        if (e.key === 'Escape') {
+                            if (lightbox.parentNode) {
+                                lightbox.style.animation = 'lightbox-fade-out 0.3s ease';
+                                setTimeout(() => {
+                                    if (lightbox.parentNode) {
+                                        document.body.removeChild(lightbox);
+                                    }
+                                }, 300);
+                            }
+                            document.removeEventListener('keydown', escHandler);
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+
+    <!-- 初始化代码高亮 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.hljs) {
+                hljs.configure({
+                    languages: ['javascript', 'python', 'html', 'css', 'json']
+                });
+            }
+        });
+    </script>
+</body>
+</html>

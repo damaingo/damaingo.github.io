@@ -3,176 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人博客</title>
-    <!-- 引入 Vue 3 -->
+    <title>赛博博客 · 神经漫游</title>
+
+    <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    <!-- 引入图标库 -->
+    <!-- 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-   <link href="main.css" rel="stylesheet">
+    <!-- 赛博主样式表 -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- 页面专用样式 -->
+    <link rel="stylesheet" href="css/cyber-posts.css">
+    <link rel="stylesheet" href="css/cyber-space.css">
+    <link rel="stylesheet" href="css/cyber-profile.css">
 </head>
-<body>
-   <div class="top-container">
-        <!-- 左侧：天气时间 -->
-        <div class="weather-time-widget">
+<body class="cyber-body">
+<!-- ========== 顶部容器：天气 + 导航 + 问候 ========== -->
+<div class="cyber-top-container">
+    <!-- 左侧：天气时间 - 赛博仪表盘 -->
+    <div class="cyber-weather-widget">
+        <div class="weather-hologram">
             <div class="weather-icon">🌤️</div>
-            <div class="weather-info">
-                <div class="temperature">26°C</div>
-                <div class="location">北京</div>
+            <div class="weather-stats">
+                <div class="temp-value">26°C</div>
+                <div class="location-tag">北京·量子节点</div>
             </div>
-            <div class="time-section">
-                <div class="time" id="current-time">14:30:45</div>
-                <div class="date" id="current-date">202224年1月15日 周一</div>
+        </div>
+        <div class="time-hologram">
+            <div class="digital-time" id="current-time">14:30:45</div>
+            <div class="digital-date" id="current-date">2026.02.11 周二</div>
+        </div>
+        <div class="hologram-glow"></div>
+    </div>
+
+    <!-- 中间：导航栏 - 赛博面板 -->
+    <nav class="cyber-nav">
+        <div class="nav-glow"></div>
+        <a class="nav-item active" data-page="posts">
+            <span class="nav-icon">◈</span>
+            <span class="nav-text">帖子</span>
+            <span class="nav-indicator"></span>
+        </a>
+        <a class="nav-item" data-page="space">
+            <span class="nav-icon">◈</span>
+            <span class="nav-text">空间</span>
+            <span class="nav-indicator"></span>
+        </a>
+        <a class="nav-item" data-page="profile">
+            <span class="nav-icon">◈</span>
+            <span class="nav-text">我的</span>
+            <span class="nav-indicator"></span>
+        </a>
+        <a class="nav-item" data-page="pending">
+
+            <span class="nav-text">待定</span>
+            <span class="nav-indicator"></span>
+        </a>
+    </nav>
+
+    <!-- 右侧：名言问候 - 神经接驳 -->
+    <div class="cyber-greeting-widget">
+        <div class="neural-interface">
+            <div class="interface-icon">🧠</div>
+            <div class="interface-content">
+                <div class="greeting-line" id="dynamic-greeting">下午好，神经漫游者</div>
+                <div class="quote-line">乱起于世归于尘 · 心随境转亦由心</div>
+            </div>
+            <div class="interface-scan"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 页面容器 ========== -->
+<div class="cyber-page-container">
+    <!-- 帖子页面 -->
+    <div id="posts-page" class="cyber-page posts-page active">
+        <div class="page-header">
+            <h2 class="glitch-title" data-text="最新神经树">最新神经树</h2>
+            <div class="header-divider"></div>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="cyber-empty-state">
+            <div class="empty-hologram">
+                <i class="fas fa-edit"></i>
+                <h3>没有帖子</h3>
+                <p>启动写入进程 · 创建你的第一条神经元</p>
             </div>
         </div>
 
-        <!-- 中间：导航栏 -->
-        <nav class="infinite-nav">
-            <a class="infinite-item active" data-page="posts">帖子</a>
-            <a class="infinite-item" data-page="space">空间</a>
-            <a class="infinite-item" data-page="profile">我的</a>
-            <a class="infinite-item" data-page="pending">待定</a>
-        </nav>
 
-        <!-- 右侧：名言问候 -->
-        <div class="greeting-widget">
-            <div class="quote-icon">💭</div>
-            <div class="greeting-content">
-                <div class="greeting" id="dynamic-greeting">下午好，旅行者！</div>
-                <div class="quote">乱起于世归于运，心随境转亦由心</div>
+        <div class="cyber-post-card" style="margin-bottom:20px; ">
+            <div class="post-card-header">
+                <h3 class="glitch-id">hello world!</h3>
+                <p> hello world!</p>
+            </div>
+        </div>
+
+        <!-- 帖子列表容器 -->
+        <div id="posts-container" class="cyber-posts-grid">
+            <div class="cyber-post-card">
+                <div class="post-card-header">
+                    <h3 class="glitch-id">hello world!</h3>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 页面容器 -->
-    <div class="page-container">
-        <!-- 帖子页面 -->
-        <div id="posts-page" class="page posts-page active">
-            <h2 style="color: #333; margin-bottom: 2rem;">最新帖子</h2>
-                <!-- 空状态元素 - 默认显示 -->
-                <div class="empty-state">
-                    <i class="fas fa-edit"></i>
-                        <h3>还没有文章</h3>
-                      <p>点击"写文章"开始你的创作之旅</p>
-                 </div>
-
-
-            <div class="post-card">
-                <div class="post-header">
-                    <h3 class="post-title">hello world!</h3>
-                    <div class="post-meta">10年前 · 99999浏览</div>
-                </div>
-                <div class="post-content">
-                    hello world!
-                </div>
-            </div>
-            <div id="posts-container">
-                    <!-- 文章会通过 JS 动态渲染到这里 -->
-
-            </div>
-
-
+    <!-- 空间页面 -->
+    <div id="space-page" class="cyber-page space-page">
+        <div class="page-header">
+            <h2 class="glitch-title" data-text="数字领域">数字领域</h2>
+            <div class="header-divider"></div>
         </div>
 
-        <!-- 空间页面 -->
-        <div id="space-page" class="page space-page">
-            <h2 style="color: #333; margin-bottom: 2rem;">我的空间</h2>
-            <div class="space-grid">
-                <div class="space-card">
-                    <div class="space-icon">📁</div>
-                    <h3 class="space-title">项目文件</h3>
-                    <p>12个文件</p>
-                </div>
-                <div class="space-card">
-                    <div class="space-icon">📷</div>
-                    <h3 class="space-title">相册集</h3>
-                    <p>45张照片</p>
-                </div>
-                <div class="space-card">
-                    <div class="space-icon">🎵</div>
-                    <h3 class="space-title">音乐收藏</h3>
-                    <p>128首歌曲</p>
-                </div>
-                <div class="space-card">
-                    <div class="space-icon">📚</div>
-                    <h3 class="space-title">知识库</h3>
-                    <p>23篇文章</p>
-                </div>
-                <div class="space-card">
-                    <div class="space-icon">👥</div>
-                    <h3 class="space-title">好友圈</h3>
-                    <p>86位好友</p>
-                </div>
-                <div class="space-card">
-                    <div class="space-icon">⭐</div>
-                    <h3 class="space-title">收藏夹</h3>
-                    <p>34个收藏</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 我的页面 -->
-        <div id="profile-page" class="page profile-page">
-            <div class="profile-header">
-                <div class="profile-avatar">👤</div>
-                <h1 class="profile-name">大钱</h1>
-                <p class="profile-bio">地球爱护者 | 多吃多拉者 | 随地就睡</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">128</div>
-                    <div class="stat-label">发布帖子</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">2.4K</div>
-                    <div class="stat-label">获得点赞</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">86</div>
-                    <div class="stat-label">关注者</div>
-                </div>
-            </div>
-
-            <div class="recent-activity">
-                <h3 style="color: #333; margin-bottom: 1rem;">最近动态</h3>
-                <div class="activity-item">
-                    <div class="activity-icon">📝</div>
-                    <div>
-                        <div style="font-weight: 600;">发布了新帖子</div>
-                        <div style="color: #666; font-size: 0.9rem;">探索现代Web设计趋势</div>
+        <div class="cyber-space-grid">
+            <div class="space-card music">
+                <div class="card-hologram" onclick="goTomusic()">
+                    <div class="card-icon">🎵</div>
+                    <h3>音乐库</h3>
+                    <div class="card-stats" >
+                        <span class="stat-value" id="stat-value">0</span>
+                        <span class="stat-label">首曲目</span>
                     </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">❤️</div>
-                    <div>
-                        <div style="font-weight: 600;">点赞了文章</div>
-                        <div style="color: #666; font-size: 0.9rem;">CSS动画性能优化指南</div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">👥</div>
-                    <div>
-                        <div style="font-weight: 600;">关注了新用户</div>
-                        <div style="color: #666; font-size: 0.9rem;">李四 - UI设计师</div>
-                    </div>
+                    <div class="card-scanline"></div>
                 </div>
             </div>
-        </div>
 
-        <!-- 待定页面 -->
-        <div id="pending-page" class="page">
-            <h2 style="color: #333; margin-bottom: 2rem;">待定功能</h2>
-            <div style="text-align: center; padding: 4rem 0; color: #666;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">🚧</div>
-                <h3 style="margin-bottom: 1rem;">功能开发中</h3>
-                <p>这个功能正在紧锣密鼓地开发中，敬请期待！</p>
+            <div class="space-card knowledge">
+                <div class="card-hologram" onclick="goTknowledge()">
+                    <div class="card-icon">📚</div>
+                    <h3>知识库</h3>
+                    <div class="card-stats">
+                        <span class="stat-value" id="stat-value1">0</span>
+                        <span class="stat-label">篇文档</span>
+                    </div>
+                    <div class="card-scanline"></div>
+                </div>
+            </div>
+
+            <div class="space-card code">
+                <div class="card-hologram">
+                    <div class="card-icon">⌨️</div>
+                    <h3>代码库</h3>
+                    <div class="card-stats">
+                        <span class="stat-value">47</span>
+                        <span class="stat-label">个仓库</span>
+                    </div>
+                    <div class="card-scanline"></div>
+                </div>
             </div>
         </div>
     </div>
 
- <script type="module" src="main.js"></script>
+    <!-- 我的页面（赛博风） -->
+    <div id="profile-page" class="cyber-page profile-page">
+        <!-- 网格背景 -->
+        <div class="profile-grid"></div>
 
+        <!-- 头像区域 - 神经接驳器 -->
+        <div class="profile-avatar-container">
+            <div class="avatar-ring-primary"></div>
+            <div class="avatar-ring-secondary"></div>
+            <div class="avatar-scan-line"></div>
+            <div class="profile-avatar">
+                <img src="../assets/unnamed.jpg" alt="用户神经映射">
+            </div>
+            <div class="avatar-glow"></div>
+        </div>
+
+        <!-- 用户名 + 签名 - 意识标识 -->
+        <div class="profile-identity">
+            <h1 class="glitch-id" data-text="DAqIan!">DAqIan!</h1>
+            <div class="consciousness-signature">
+                <span class="sig-cursor">▶</span>
+                <span class="sig-text">“梦想是创造数字生命”</span>
+                <span class="sig-cursor">◼</span>
+            </div>
+        </div>
+
+        <!-- 流动数据栏 - 量子态信息流 -->
+        <div class="quantum-ticker-wrapper">
+            <div class="quantum-ticker">
+                <div class="ticker-stream">
+                    <!-- 建站时间 -->
+                    <span class="stream-item">
+                            <span class="stream-icon">📡</span>
+                            <span class="stream-label">建站时间</span>
+                            <span class="stream-data">2026-02-06 00:01:56</span>
+                        </span>
+                    <span class="stream-pulse">⚡</span>
+
+                    <!-- 帖子数 -->
+                    <span class="stream-item">
+                            <span class="stream-icon">📟</span>
+                            <span class="stream-label">神经元</span>
+                            <span class="stream-data">5</span>
+                        </span>
+                    <span class="stream-pulse">⚡</span>
+
+                    <!-- 神秘代码 -->
+                    <span class="stream-item">
+                            <span class="stream-icon">🔮</span>
+                            <span class="stream-label">神秘代码</span>
+                            <span class="stream-data glitch-data">2@#4%6</span>
+                        </span>
+                    <span class="stream-pulse">⚡</span>
+
+                    <!-- 重复数据用于无缝滚动 -->
+                    <span class="stream-item">
+                            <span class="stream-icon">📡</span>
+                            <span class="stream-label">建站时间</span>
+                            <span class="stream-data">2026-02-06 00:01:56</span>
+                        </span>
+                    <span class="stream-pulse">⚡</span>
+                    <span class="stream-item">
+                            <span class="stream-icon">📟</span>
+                            <span class="stream-label">神经元</span>
+                            <span class="stream-data">5</span>
+                        </span>
+                    <span class="stream-pulse">⚡</span>
+                    <span class="stream-item">
+                            <span class="stream-icon">🔮</span>
+                            <span class="stream-label">神秘代码</span>
+                            <span class="stream-data glitch-data">2@#4%6</span>
+                        </span>
+                </div>
+            </div>
+
+            <!-- 第二条流动线 - 系统状态 -->
+            <div class="quantum-ticker ticker-reverse">
+                <div class="ticker-stream">
+                    <span class="stream-item">热爱生活</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">赛博生命</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">硅基生物</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">创世神</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">量子态稳定</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">Pycharm</span>
+                    <span class="stream-pulse">✦</span>
+                    <span class="stream-item">MarkDown</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 近期动态 - 事件日志 -->
+        <div class="event-log">
+            <div class="log-header">
+                <span class="log-icon">⏣</span>
+                <span class="log-title">事件记录</span>
+                <span class="log-icon">⏣</span>
+            </div>
+
+            <div class="log-feed">
+                <div class="log-entry">
+                    <div class="entry-timestamp">[001]</div>
+                    <div class="entry-content">
+                        <span class="entry-tag post">POST</span>
+                        发布了新的神经元
+                        <span class="entry-status success">✓ 同步</span>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <div class="entry-timestamp">[002]</div>
+                    <div class="entry-content">
+                        <span class="entry-tag life">LIFE</span>
+                        产生了意识分支
+                        <span class="entry-status energy">⚡ +1</span>
+                    </div>
+                </div>
+
+                <div class="log-entry">
+                    <div class="entry-timestamp">[003]</div>
+                    <div class="entry-content">
+                        <span class="entry-tag system">SYSTEM</span>
+                        赛博大脑接入 v2.0.6
+                        <span class="entry-status upgrade">🔄 升级</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待定页面 -->
+    <div id="pending-page" class="cyber-page pending-page">
+        <div class="page-header">
+            <h2 class="glitch-title" data-text="未知领域">未知领域</h2>
+            <div class="header-divider"></div>
+        </div>
+
+        <div class="cyber-construction">
+            <div class="construction-hologram">
+
+                <h3 class="glitch-title">🚧正在编译新世界</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="glitch-title">进度: 47% · 预计剩余时间: 未知</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 主脚本 -->
+<script src="js/main.js"></script>
+<script src="js/cyber-posts.js"></script>
+<script src="js/cyber-profile.js"></script>
 </body>
 </html>

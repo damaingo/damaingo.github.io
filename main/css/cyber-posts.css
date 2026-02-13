@@ -1,0 +1,179 @@
+/* ========== 赛博帖子页面 ========== */
+/* 对应: index.html - posts-page, post-card, posts-container */
+
+/* 帖子网格 */
+.cyber-posts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* 赛博帖子卡片 */
+.cyber-post-card {
+    background: rgba(8, 20, 30, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-left: 4px solid #00ffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.cyber-post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.cyber-post-card:hover {
+    transform: translateX(10px) translateY(-2px);
+    border-color: #ff44aa;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+.cyber-post-card:hover::before {
+    left: 100%;
+}
+
+/* 帖子头部 */
+.post-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.post-card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #00ffff;
+    text-shadow: 0 0 8px cyan;
+    margin: 0;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* 帖子元数据 */
+.post-card-meta {
+    display: flex;
+    gap: 1rem;
+    color: #a0f0fa;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+}
+
+.post-card-time {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+}
+
+.post-card-likes,
+.post-card-views {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255, 68, 170, 0.08);
+    border: 1px solid rgba(255, 68, 170, 0.2);
+    border-radius: 20px;
+}
+
+/* 帖子内容 */
+.post-card-content {
+    color: #ccffff;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+/* 帖子图片 */
+.post-card-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+    height: 120px;
+}
+
+.post-card-image {
+    flex: 1;
+    min-width: 0;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.post-card-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.post-card-image:hover::before {
+    transform: translateX(100%);
+}
+
+.post-card-image:hover {
+    transform: scale(1.02);
+    border-color: #ff44aa;
+}
+
+/* 单张图片 */
+.post-card-images:has(.post-card-image:only-child) .post-card-image {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* 图片覆盖层 */
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(255,68,170,0.1));
+    pointer-events: none;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .post-card-header {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .post-card-meta {
+        flex-wrap: wrap;
+    }
+
+    .post-card-images {
+        height: 100px;
+    }
+
+    .post-card-images:has(.post-card-image:only-child) .post-card-image {
+        max-width: 100%;
+    }
+}
